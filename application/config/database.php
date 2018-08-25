@@ -70,25 +70,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | The $query_builder variables lets you determine whether or not to load
 | the query builder class.
 */
-$active_group = 'default';
+$active_group = 'db_academic';
 $query_builder = TRUE;
 
 
 //$this->load->library('session');
 
+//$db_load = 'db_academic';
+//if(isset($_SESSION['load_db'])){
+//    $db_load = $_SESSION['load_db'];
+//}
 
-
-$db_load = 'db_academic';
-if(isset($_SESSION['load_db'])){
-    $db_load = $_SESSION['load_db'];
-}
-
-$db['default'] = array(
-	'dsn'	=> 'mysql:host=localhost;dbname=mydatabase',
+$db['db_academic'] = array(
+	'dsn'	=> '',
 	'hostname' => 'localhost',
 	'username' => 'root',
 	'password' => '',
-	'database' => $db_load,
+	'database' => 'db_academic',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
@@ -103,4 +101,26 @@ $db['default'] = array(
 	'stricton' => FALSE,
 	'failover' => array(),
 	'save_queries' => TRUE
+);
+
+$db['db_employees'] = array(
+    'dsn'	=> '',
+    'hostname' => 'localhost',
+    'username' => 'root',
+    'password' => '',
+    'database' => 'db_employees',
+    'dbdriver' => 'mysqli',
+    'dbprefix' => '',
+    'pconnect' => FALSE,
+    'db_debug' => (ENVIRONMENT !== 'production'),
+    'cache_on' => FALSE,
+    'cachedir' => '',
+    'char_set' => 'utf8',
+    'dbcollat' => 'utf8_general_ci',
+    'swap_pre' => '',
+    'encrypt' => FALSE,
+    'compress' => FALSE,
+    'stricton' => FALSE,
+    'failover' => array(),
+    'save_queries' => TRUE
 );
