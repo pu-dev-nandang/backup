@@ -23,13 +23,10 @@
 
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="<?php echo base_url('assets/bootstrap/js/jquery.min.js'); ?>"></script>
+<!--    <script src="--><?php //echo base_url('assets/bootstrap/js/jquery.min.js'); ?><!--"></script>-->
+    <script src="<?php echo base_url('assets/bootstrap/js/jquery-1.10.2.min.js'); ?>"></script>
     <script src="<?php echo base_url('assets/moment/moment.js'); ?>"></script>
 
-
-<!--    <script type="text/javascript" src="/path/to/bootstrap/js/transition.js"></script>-->
-<!--    <script type="text/javascript" src="/path/to/bootstrap/js/collapse.js"></script>-->
-<!--    <!-- Include all compiled plugins (below), or include individual files as needed -->-->
     <script src="<?php echo base_url('assets/bootstrap/js/bootstrap.min.js'); ?>"></script>
 
     <script type="text/javascript" src="<?php echo base_url('assets/datetimepicker/js/bootstrap-datetimepicker.min.js'); ?>"></script>
@@ -50,12 +47,68 @@
     }
 </style>
 
+<script>
+
+    $(document).ready(function () {
+
+        window.base_url_js = "<?php echo base_url(); ?>";
+
+        setInterval(function () {
+            $('#timeNow').text(moment().format('dddd, d MMM YYYY H:mm:ss'));
+        },1000);
+    });
+
+    $(document).on('click','#btnReloadDB',function () {
+        var url = base_url_js+'backup/reLoadDatabase';
+
+        loadingButton('#btnReloadDB');
+        $.get(url,function (result) {
+            setTimeout(function () {
+                window.location.href='';
+            },3000);
+        });
+    });
+
+
+    function PopupCenter(url, title, w, h) {
+        // Fixes dual-screen position                         Most browsers      Firefox
+        var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : screen.left;
+        var dualScreenTop = window.screenTop != undefined ? window.screenTop : screen.top;
+
+        width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+        height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+        var left = ((width / 2) - (w / 2)) + dualScreenLeft;
+        var top = ((height / 2) - (h / 2)) + dualScreenTop;
+        var newWindow = window.open(url, title, 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+
+        // Puts focus on the newWindow
+        if (window.focus) {
+            newWindow.focus();
+        }
+    }
+
+    function loadingButton(element) {
+        $(element).prop('disabled',true).html('<i class="fa fa-refresh fa-custom-right fa-spin fa-fw"></i> Loading...');
+    }
+
+</script>
+
 <body style="background: #607d8b;">
 
+<?php
+
+$db_load = 'db_academic';
+if(isset($_SESSION['load_db'])){
+    $db_load = $_SESSION['load_db'];
+}
+
+?>
+
 <div class="container" style="margin-top: 30px;">
-    <div class="row" style="color: #ffffff;">
+    <div class="row" style="color: #ffffff;margin-bottom: 10px;">
         <div class="col-md-6">
-            DB Active : <span style="color: yellow;font-weight: bold;">db_academic</span>
+            <button class="btn btn-sm btn-default" id="btnReloadDB"><i class="fa fa-refresh fa-custom-right"></i> Reload DB</button> | DB Active : <span style="color: yellow;font-weight: bold;"><?php  echo $db_load; ?></span>
         </div>
         <div class="col-md-6" style="text-align: right;margin-bottom: 10px;">
             <div id="timeNow">-</div>
@@ -70,10 +123,14 @@
                     <a href="<?php echo base_url('database/list-database'); ?>"><i class="fa fa-database fa-custom-right"></i> Database</a>
                 </li>
                 <li role="presentation" class="<?php if($this->uri->segment(2)=='setting-auto-config'){ echo 'active';} ?>">
-                    <a href="<?php echo base_url('database/setting-auto-config'); ?>"><i class="fa fa-cog fa-custom-right"></i> Setting Auto Backup</a>
+                    <a href="<?php echo base_url('database/setting-auto-config'); ?>"><i class="fa fa-retweet fa-custom-right"></i> Auto Backup</a>
+                </li>
+
+                <li role="presentation" style="float: right;">
+                    <a href="#"><i class="fa fa-github-alt fa-custom-right"></i> Github</a>
                 </li>
                 <li role="presentation" style="float: right;">
-                    <a href="#"><i class="fa fa-github-alt fa-custom-right"></i> Github Setting</a>
+                    <a href="#"><i class="fa fa-cogs fa-custom-right"></i> Setting</a>
                 </li>
             </ul>
 
@@ -91,15 +148,6 @@
 
 </body>
 
-<script>
 
-    $(document).ready(function () {
-
-        setInterval(function () {
-            $('#timeNow').text(moment().format('dddd, d MMM YYYY H:mm:ss'));
-        },1000);
-    });
-
-</script>
 
 </html>

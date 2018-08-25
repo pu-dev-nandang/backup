@@ -3,6 +3,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class C_dashboard extends CI_Controller {
 
+    function __construct()
+    {
+        parent::__construct();
+
+        $this->load->model('m_dashboard');
+
+    }
+
+
+
+
     public function menu_navigation($page){
         $data['page'] = $page;
         $this->load->view('menu_navigation',$data);
@@ -11,6 +22,7 @@ class C_dashboard extends CI_Controller {
     public function index(){
 
         $data['dataDB'] = $this->loadDB();
+        $data['arrDataDB'] = $this->m_dashboard->getDataBase();
         $page = $this->load->view('page/dashboard',$data,true);
         $this->menu_navigation($page);
     }
@@ -107,22 +119,33 @@ class C_dashboard extends CI_Controller {
 
     public function loadDB(){
 
+        date_default_timezone_set('Asia/Jakarta');
+        $dataTime = date('Y-m-d H:i:s') ;
+
         $this->load->dbutil();
         $dbs = $this->dbutil->list_databases();
 
-        $noBackup = array('access_card','db_assets','db_global','db_students',
-            'importer','information_schema','invent','k6330916_pu_acid','k6330916_pu_database',
-            'metro','my_db','mysql','performance_schema','phpmyadmin','root26','siak4','test','markov');
 
-        $dbBC = [];
-        foreach ($dbs as $db)
-        {
-            if(!in_array($db,$noBackup)){
-                array_push($dbBC,$db);
+        // Insert To DB
+        if(count($dbs)>0){
+            for($i=0;$i<count($dbs);$i++){
+
+                // Cek apakah sudah ada di db atau belum
+                $checkDB = $this->db->get_where('backup_db.db',array('Name'=>$dbs[$i]),1)
+                    ->result_array();
+
+                if(count($checkDB)<=0){
+                    $arr_ins = array(
+                        'Name' => $dbs[$i],
+                        'InsertAt' => $dataTime
+                    );
+                    $this->db->insert('backup_db.db',$arr_ins);
+                }
+
             }
         }
 
-//        return $dbBC;
+
         return $dbs;
 
     }

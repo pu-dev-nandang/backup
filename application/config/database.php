@@ -70,23 +70,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | The $query_builder variables lets you determine whether or not to load
 | the query builder class.
 */
-$active_group = 'db_academic';
+$active_group = 'default';
 $query_builder = TRUE;
 
 
 //$this->load->library('session');
 
-//$db_load = 'db_academic';
-//if(isset($_SESSION['load_db'])){
-//    $db_load = $_SESSION['load_db'];
-//}
+$db_load = 'db_academic';
+if(isset($_SESSION['load_db'])){
+    $db_load = $_SESSION['load_db'];
+}
 
-$db['db_academic'] = array(
+$db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
 	'username' => 'root',
 	'password' => '',
-	'database' => 'db_academic',
+//	'database' => 'db_academic',
+	'database' => $db_load,
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,

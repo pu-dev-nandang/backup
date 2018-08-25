@@ -54,6 +54,12 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 
+
+
 $route['database/setting-auto-config'] = 'c_dashboard/auto_backup';
 $route['database/list-database'] = 'c_dashboard';
+
+
+$route['backup/reLoadDatabase'] = 'c_backup/reLoadDatabase';
+$route['backup/download/(:any)'] = 'c_backup/download/$1';
 
