@@ -4,6 +4,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class C_backup extends CI_Controller {
 
 
+    public function loadBackUP(){
+        $this->load->view();
+    }
+
     // ===== Reload Database ======
     public function reLoadDatabase(){
         date_default_timezone_set('Asia/Jakarta');
@@ -33,6 +37,46 @@ class C_backup extends CI_Controller {
         }
 
         return print_r(1);
+    }
+
+
+    // ===== Add DB Auto BC Daily ====
+    public function crudDaily(){
+        $data_arr = $this->input->post('dataForm');
+
+        if($data_arr['action']=='add'){
+
+            // Cek apakah sudah ada atau blm
+            if(count($data_arr['arrDBID'])>0){
+                for($i=0;$i<count($data_arr['arrDBID']);$i++){
+                    $d = $data_arr['arrDBID'][$i];
+
+                    $arrCheck = array(
+                        'DBID' => $d,
+                        'BCType' => '1'
+                    );
+
+                    $d_check = $this->db->get_where('backup_db.setting',$arrCheck)->result_array();
+
+                    if(count($d_check)<=0){
+                        $arrIns = array(
+                            'DBID' => $d,
+                            'BCType' => '1',
+                            'Status' => '1'
+                        );
+                        $this->db->insert('backup_db.setting',$arrIns);
+                    } else {
+                        $this->db->set('Time', $data_arr['Time']);
+                        $this->db->where('ID',1);
+                        $this->db->update('backup_db.bc_type');
+                    }
+                }
+            }
+
+            return print_r(1);
+
+        }
+        print_r($data_arr);
     }
 
 

@@ -77,25 +77,39 @@
 
             <div class="form-group">
                 <label>Choose Time</label>
-                <input class="form-control" id="formDaily" />
+                <?php
+
+                $time = ($arrDaily['Time']!='' && $arrDaily['Time']!=null && $arrDaily['Time']!= '00:00:00')
+                    ? substr($arrDaily['Time'],0,5) : '';
+
+                ?>
+                <input class="form-control" id="formDaily" value="<?php echo $time; ?>" />
             </div>
             <div class="form-group">
                 <label>Select DB</label>
                 <br/>
                 <div class="table-responsive">
                     <table class="table">
-                        <?php for($i=0;$i<count($dataDB);$i++){
+
+                        <?php
+
+                        $dataArrDaily = $arrDaily['Data'];
+
+                        for($i=0;$i<count($dataArrDaily);$i++){
+                            $d = $dataArrDaily[$i];
                             if($i==0){
                                 echo "<tr>";
                             } else if($i%3==0){
                                 echo "</tr><tr>";
                             }
 
+                            $c = ($d['Checked']=='1') ? 'checked' : '';
+
                             ?>
 
                             <td>
                                 <label class="checkbox-inline">
-                                    <input type="checkbox" value="option1"> <?php echo $dataDB[$i]; ?>
+                                    <input type="checkbox" id="selcDaily<?php echo $d['ID']; ?>" value="<?php echo $d['ID']; ?>" <?php echo $c; ?>> <?php echo $d['Name']; ?>
                                 </label>
                             </td>
 
@@ -108,10 +122,11 @@
             <hr/>
             <div style="text-align: right;">
                 <button class="btn btn-danger">Set Non Active</button> |
-                <button class="btn btn-primary">Save</button>
+                <button class="btn btn-primary" id="btnSaveDaily">Save</button>
             </div>
         </div>
     </div>
+
     <div class="col-md-4">
         <div class="thumbnail thumbnail-auto thumbnail-auto-weekly">
             <div class="status-nonactive">
@@ -236,11 +251,12 @@
 
 <script>
 
-
-
     $(function () {
 
         var weekArray = moment.weekdays();
+
+        window.DB =  '<?php echo json_encode($arrDaily['Data']); ?>';
+        window.arrDB = JSON.parse(DB);
 
         $('#formWeeklyDay,#formMontlyDate').empty();
         $('#formWeeklyDay').append('<option value="" disabled selected>Selc. Day</option>');
@@ -258,9 +274,44 @@
         //     format: 'Do'
         // });
 
+        // format: 'LT'
         $('#formDaily,#formWeeklyTime,#formMonthlyIme').datetimepicker({
-            format: 'LT'
+
+            format: 'HH:mm'
         });
+    });
+
+    $('#btnSaveDaily').click(function () {
+
+        var Time = $('#formDaily').val();
+
+        if(Time!='' && Time!=null){
+            loadingButton('#btnSaveDaily');
+
+            var arrDay = [];
+            for(var i=0;i<arrDB.length;i++){
+                var d = arrDB[i];
+                if($('#selcDaily'+d.ID).is(':checked')){
+                    arrDay.push($('#selcDaily'+d.ID).val());
+                }
+            }
+
+            var dataForm = {
+                action : 'add',
+                Time : Time,
+                arrDBID : arrDay
+            };
+
+            var url = base_url_js+'backup/__crudDaily';
+
+            $.post(url,{dataForm:dataForm},function (result) {
+                setTimeout(function () {
+                    window.location.href = '';
+                    // $('#btnSaveDaily').prop('disabled',false).html('Save');
+                },1000);
+            });
+        }
+
     });
 
 </script>

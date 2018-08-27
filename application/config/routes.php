@@ -62,4 +62,5 @@ $route['database/list-database'] = 'c_dashboard';
 
 $route['backup/reLoadDatabase'] = 'c_backup/reLoadDatabase';
 $route['backup/download/(:any)'] = 'c_backup/download/$1';
+$route['backup/__crudDaily'] = 'c_backup/crudDaily';
 

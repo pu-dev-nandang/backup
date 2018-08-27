@@ -12,8 +12,6 @@ class C_dashboard extends CI_Controller {
     }
 
 
-
-
     public function menu_navigation($page){
         $data['page'] = $page;
         $this->load->view('menu_navigation',$data);
@@ -21,7 +19,6 @@ class C_dashboard extends CI_Controller {
 
     public function index(){
 
-        $data['dataDB'] = $this->loadDB();
         $data['arrDataDB'] = $this->m_dashboard->getDataBase();
         $page = $this->load->view('page/dashboard',$data,true);
         $this->menu_navigation($page);
@@ -29,6 +26,9 @@ class C_dashboard extends CI_Controller {
 
     public function auto_backup(){
         $data['dataDB'] = $this->loadDB();
+
+        $data['arrDaily'] = $this->m_dashboard->getDataDaily();
+
         $page = $this->load->view('page/auto_backup',$data,true);
         $this->menu_navigation($page);
     }
